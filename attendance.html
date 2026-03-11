@@ -250,7 +250,7 @@ let currentDate = '';
 
 async function checkAuth(){
   try{
-    const r = await fetch('api/auth.php?action=me',{credentials:'include'});
+    const r = await fetch('/auth.php?action=me',{credentials:'include'});
     const j = await r.json();
     if(!j.success){ location.href='login.html'; return null; }
     const u = j.data;
@@ -265,13 +265,13 @@ async function checkAuth(){
 }
 
 async function logout(){
-  await fetch('api/auth.php?action=logout',{credentials:'include'});
+  await fetch('/auth.php?action=logout',{credentials:'include'});
   location.href='login.html';
 }
 
 async function loadCourses(){
   try{
-    const r = await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+    const r = await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
     const j = await r.json();
     if(!j.success) return;
     const sel = document.getElementById('ctrl_course');
@@ -289,7 +289,7 @@ async function loadStudentsForCourse(){
   if(!currentCourse){ students=[]; renderTable(); return; }
 
   try{
-    const r = await fetch('api/students.php?action=list&status=Approved',{credentials:'include'});
+    const r = await fetch('/students.php?action=list&status=Approved',{credentials:'include'});
     const j = await r.json();
     students = j.success ? j.data : [];
     renderTable();
