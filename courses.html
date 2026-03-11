@@ -170,7 +170,7 @@ async function loadCourses(){
   const params=new URLSearchParams({action:'list'});
   if(search) params.append('search',search);
   if(cat)    params.append('category',cat);
-  const r=await fetch('api/courses.php?'+params,{credentials:'include'});
+  const r=await fetch('/courses.php?'+params,{credentials:'include'});
   const j=await r.json();
   const grid=document.getElementById('coursesGrid');
   if(!j.success||!j.data.length){
@@ -215,7 +215,7 @@ async function loadCourses(){
 }
 
 async function viewCourse(id){
-  const r=await fetch(`api/courses.php?action=get&id=${id}`,{credentials:'include'});
+  const r=await fetch(`/courses.php?action=get&id=${id}`,{credentials:'include'});
   const j=await r.json();
   if(!j.success){showToast('Error loading course');return;}
   const c=j.data;
@@ -249,7 +249,7 @@ async function addCourse(){
     color:document.getElementById('c_color')?.value||'#7C3AED',
     status:'Active'
   };
-  const r=await fetch('api/courses.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch('/courses.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json();
   if(j.success){closeModal('addCourseModal');loadCourses();showToast('📚 Course added!');}
   else showToast('❌ '+j.message);
@@ -257,7 +257,7 @@ async function addCourse(){
 
 async function deleteCourse(id){
   if(!confirm('Delete this course?'))return;
-  const r=await fetch('api/courses.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/courses.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){loadCourses();showToast('🗑️ Course removed');}
   else showToast('❌ '+j.message);
@@ -272,7 +272,7 @@ function showToast(msg){
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');}));
 
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   loadCourses();
