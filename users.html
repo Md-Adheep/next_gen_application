@@ -676,7 +676,7 @@ async function renderUsers(){
   if(role)   params.append('role',role);
   if(status) params.append('status',status);
   if(q)      params.append('search',q);
-  const r=await fetch('api/users.php?'+params,{credentials:'include'});
+  const r=await fetch('/users.php?'+params,{credentials:'include'});
   const j=await r.json();
   document.getElementById('countLbl').textContent=(j.data?.length||0)+' users';
   document.getElementById('userTbody').innerHTML=j.success&&j.data.length?j.data.map(u=>`
@@ -706,7 +706,7 @@ async function addUser(){
   const fn=document.getElementById('f_fn').value.trim(), ln=document.getElementById('f_ln').value.trim();
   const role=document.getElementById('f_role').value, pw=document.getElementById('f_pw').value.trim();
   if(!fn||!ln||!role||!pw){showToast('⚠️ Please fill all required fields','#FEF3C7','#92400E');return;}
-  const r=await fetch('api/users.php?action=create',{
+  const r=await fetch('/users.php?action=create',{
     method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       name:fn+' '+ln,
@@ -732,7 +732,7 @@ function openEdit(id,name,email,role,dept,status){
   document.getElementById('editModal').classList.add('show');
 }
 async function saveEdit(){
-  const r=await fetch('api/users.php?action=update',{
+  const r=await fetch('/users.php?action=update',{
     method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({id:editId,name:document.getElementById('e_name').value,email:document.getElementById('e_email').value,role:document.getElementById('e_role').value,department:document.getElementById('e_dept').value,status:document.getElementById('e_status').value})
   });
@@ -743,7 +743,7 @@ async function saveEdit(){
 }
 async function delUser(id){
   if(!confirm('Delete this user?'))return;
-  const r=await fetch('api/users.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/users.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){renderUsers();showToast('🗑️ User removed','#FEF2F2','#991B1B');}
   else showToast('❌ '+j.message,'#FEF2F2','#991B1B');
@@ -756,7 +756,7 @@ let courseOptions='<option value="">Select course…</option>';
 let rowCount=0;
 
 async function loadCoursesForReg(){
-  const r=await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+  const r=await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
   const j=await r.json();
   if(j.success) courseOptions='<option value="">Select course…</option>'+j.data.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
 }
@@ -812,7 +812,7 @@ async function submitReg(){
   const btn=document.querySelector('.reg-btn');
   btn.textContent='Submitting…'; btn.disabled=true;
   try{
-    const r=await fetch('api/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const r=await fetch('/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json();
     if(j.success){
       showToast('✅ Student registered successfully!','#D1FAE5','#065F46');
@@ -840,7 +840,7 @@ function showToast(msg,bg,color){
 
 // ── Init ─────────────────────────────────────────────────────
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   if(j.data.role!=='Admin'){location.href='user-dashboard.html';return;}
