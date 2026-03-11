@@ -312,7 +312,7 @@ const PICONS={High:'🔴',Normal:'🟣',Low:'🔵'};
 const TICONS={All:'🌐',Admin:'🛡️',User:'👤'};
 
 function tog(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
-function logout(){fetch('api/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
+function logout(){fetch('/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
 function openAdd(){document.getElementById('n_title').value='';document.getElementById('n_body').value='';document.getElementById('n_priority').value='Normal';document.getElementById('n_target').value='All';document.getElementById('addModal').classList.add('show');}
 function closeModal(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');}));
@@ -321,7 +321,7 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 async function loadNotices(){
   try{
-    const r=await fetch('api/notices.php?action=list',{credentials:'include'});
+    const r=await fetch('/notices.php?action=list',{credentials:'include'});
     const j=await r.json();
     if(!j.success){showApiError(j.message);return;}
     allNotices=j.data;
@@ -337,7 +337,7 @@ function showApiError(msg){
       <div style="font-size:44px;margin-bottom:14px;">🔌</div>
       <div style="font-family:'Poppins',sans-serif;font-size:16px;font-weight:700;color:var(--red);margin-bottom:8px;">API Connection Error</div>
       <div style="font-size:13px;color:var(--text3);max-width:360px;margin:0 auto;line-height:1.7;">${escHtml(msg||'Could not connect to the server.')}<br><br>
-      <strong>Check:</strong> PHP server is running, <code>api/notices.php</code> exists, and the <code>notices</code> table is in the database.</div>
+      <strong>Check:</strong> PHP server is running, <code>/notices.php</code> exists, and the <code>notices</code> table is in the database.</div>
     </div>`;
 }
 
@@ -387,7 +387,7 @@ function renderNotices(){
 async function createNotice(){
   const title=document.getElementById('n_title').value.trim();
   if(!title){showToast('⚠️ Title is required','#FEF3C7','#92400E');return;}
-  const r=await fetch('api/notices.php?action=create',{method:'POST',credentials:'include',
+  const r=await fetch('/notices.php?action=create',{method:'POST',credentials:'include',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({title,body:document.getElementById('n_body').value,
       priority:document.getElementById('n_priority').value,target:document.getElementById('n_target').value})});
@@ -409,7 +409,7 @@ async function updateNotice(){
   const id=document.getElementById('e_id').value;
   const title=document.getElementById('e_title').value.trim();
   if(!title){showToast('⚠️ Title is required','#FEF3C7','#92400E');return;}
-  const r=await fetch('api/notices.php?action=update',{method:'POST',credentials:'include',
+  const r=await fetch('/notices.php?action=update',{method:'POST',credentials:'include',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({id,title,body:document.getElementById('e_body').value,
       priority:document.getElementById('e_priority').value,target:document.getElementById('e_target').value})});
@@ -419,7 +419,7 @@ async function updateNotice(){
 }
 async function deleteNotice(id){
   if(!confirm('Delete this notice?'))return;
-  const r=await fetch('api/notices.php?action=delete',{method:'POST',credentials:'include',
+  const r=await fetch('/notices.php?action=delete',{method:'POST',credentials:'include',
     headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){loadNotices();showToast('🗑️ Notice deleted','#FEF2F2','#991B1B');}
@@ -437,7 +437,7 @@ function showToast(msg,bg,color){
 // ── INIT ──────────────────────────────────────────────────────
 (async()=>{
   try{
-    const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+    const r=await fetch('/auth.php?action=me',{credentials:'include'});
     const j=await r.json();
     if(!j.success){location.href='login.html';return;}
     currentUser=j.data;
