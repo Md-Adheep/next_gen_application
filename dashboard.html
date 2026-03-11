@@ -555,7 +555,7 @@ document.getElementById('starTbody').innerHTML=students.map((s,i)=>`
 // ── Stats + Activity from API ─────────────────────────────────
 (async()=>{
   // Auth check
-  const me = await fetch('api/auth.php?action=me',{credentials:'include'}).then(r=>r.json());
+  const me = await fetch('/auth.php?action=me',{credentials:'include'}).then(r=>r.json());
   if(!me.success){location.href='login.html';return;}
   if(me.data.role!=='Admin'){location.href='dashboard.html';return;}
   // Set topbar name
@@ -564,7 +564,7 @@ document.getElementById('starTbody').innerHTML=students.map((s,i)=>`
   document.querySelectorAll('[data-user-name]').forEach(el=>el.textContent=me.data.name);
 
   // Load stats
-  const stats = await fetch('api/dashboard.php?action=stats',{credentials:'include'}).then(r=>r.json());
+  const stats = await fetch('/dashboard.php?action=stats',{credentials:'include'}).then(r=>r.json());
   if(stats.success){
     const d=stats.data;
     document.getElementById('statStudents').textContent=d.total_students??'—';
@@ -574,7 +574,7 @@ document.getElementById('starTbody').innerHTML=students.map((s,i)=>`
   }
 
   // Load activity feed
-  const acts = await fetch('api/dashboard.php?action=activity&limit=5',{credentials:'include'}).then(r=>r.json());
+  const acts = await fetch('/dashboard.php?action=activity&limit=5',{credentials:'include'}).then(r=>r.json());
   const iconMap={USER_CREATED:'👤',STUDENT_CREATED:'🎓',CERT_ISSUED:'📜',COURSE_CREATED:'📚',STUDENT_APPROVED:'✅',NOTICE_CREATED:'📢'};
   const bgMap={USER_CREATED:'#EDE9FE',STUDENT_CREATED:'#ECFDF5',CERT_ISSUED:'#EFF6FF',COURSE_CREATED:'#FFF7ED',STUDENT_APPROVED:'#F0FDF4',NOTICE_CREATED:'#FEF9C3'};
   const feed = document.getElementById('actFeed');
@@ -593,7 +593,7 @@ document.getElementById('starTbody').innerHTML=students.map((s,i)=>`
   }
 })();
 
-function logout(){fetch('api/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
+function logout(){fetch('/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
 </script>
 </body>
 </html>
