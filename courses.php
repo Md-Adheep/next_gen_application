@@ -1,5 +1,5 @@
 <?php
-// api/courses.php
+// /courses.php
 // GET  ?action=list   [search, category, status]
 // GET  ?action=get    id
 // POST ?action=create {name,category,emoji,duration,fee,max_students,instructor,description,color,status}
