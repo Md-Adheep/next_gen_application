@@ -277,7 +277,7 @@ function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUppe
 
 // ── Stats ────────────────────────────────────────────────────
 async function loadStats() {
-  const r = await fetch('api/dashboard.php?action=stats', {credentials:'include'});
+  const r = await fetch('/dashboard.php?action=stats', {credentials:'include'});
   const j = await r.json();
   if (!j.success) return;
   const d = j.data;
@@ -289,7 +289,7 @@ async function loadStats() {
 
 // ── Users ─────────────────────────────────────────────────────
 async function loadUsers() {
-  const r = await fetch('api/users.php?action=list', {credentials:'include'});
+  const r = await fetch('/users.php?action=list', {credentials:'include'});
   const j = await r.json();
   const tbody = document.getElementById('userTbody');
   if (!j.success || !j.data.length) {
@@ -310,7 +310,7 @@ async function loadUsers() {
 async function addUser() {
   const fn=document.getElementById('u_fn').value.trim(), ln=document.getElementById('u_ln').value.trim(), role=document.getElementById('u_role').value;
   if (!fn||!ln||!role) { showToast('⚠️ Fill all required fields','warn'); return; }
-  const r = await fetch('api/users.php?action=create', {
+  const r = await fetch('/users.php?action=create', {
     method:'POST', credentials:'include', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ name: fn+' '+ln, username: (fn+'.'+ln).toLowerCase().replace(/\s/g,''),
       email: document.getElementById('u_em').value, password: document.getElementById('u_pw')?.value || 'User@123',
@@ -323,7 +323,7 @@ async function addUser() {
 
 async function delUser(id) {
   if (!confirm('Remove this user?')) return;
-  const r = await fetch('api/users.php?action=delete', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r = await fetch('/users.php?action=delete', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j = await r.json();
   if (j.success) { loadUsers(); loadStats(); showToast('🗑️ User removed'); }
   else showToast('❌ '+j.message,'error');
@@ -331,7 +331,7 @@ async function delUser(id) {
 
 // ── Top Students ─────────────────────────────────────────────
 async function loadTopStudents() {
-  const r = await fetch('api/students.php?action=list', {credentials:'include'});
+  const r = await fetch('/students.php?action=list', {credentials:'include'});
   const j = await r.json();
   const tbody = document.getElementById('starTbody');
   if (!j.success || !j.data.length) {
@@ -359,7 +359,7 @@ async function loadTopStudents() {
 
 // ── Activity ─────────────────────────────────────────────────
 async function loadActivity() {
-  const r = await fetch('api/dashboard.php?action=activity&limit=5', {credentials:'include'});
+  const r = await fetch('/dashboard.php?action=activity&limit=5', {credentials:'include'});
   const j = await r.json();
   const feed = document.getElementById('actFeed');
   if (!j.success || !j.data.length) {
@@ -384,7 +384,7 @@ function showToast(msg, type='success') {
 
 // ── Init ─────────────────────────────────────────────────────
 (async () => {
-  const r = await fetch('api/auth.php?action=me', {credentials:'include'});
+  const r = await fetch('/auth.php?action=me', {credentials:'include'});
   const j = await r.json();
   if (!j.success) { location.href='login.html'; return; }
   if (j.data.role !== 'Admin') { location.href='user-dashboard.html'; return; }
