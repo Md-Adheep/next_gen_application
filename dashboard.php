@@ -1,5 +1,5 @@
 <?php
-// api/dashboard.php
+// /dashboard.php
 // GET ?action=stats
 // GET ?action=activity  [limit]
 
