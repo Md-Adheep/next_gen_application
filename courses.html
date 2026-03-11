@@ -466,7 +466,7 @@ const EMOJI_MAP = {
 // ── Auth ─────────────────────────────────────────────
 async function checkAuth(){
   try{
-    const r = await fetch('api/auth.php?action=me',{credentials:'include'});
+    const r = await fetch('/auth.php?action=me',{credentials:'include'});
     const j = await r.json();
     if(!j.success){ location.href='login.html'; return null; }
     const u = j.data;
@@ -483,7 +483,7 @@ async function checkAuth(){
 }
 
 async function logout(){
-  await fetch('api/auth.php?action=logout',{credentials:'include'});
+  await fetch('/auth.php?action=logout',{credentials:'include'});
   location.href='login.html';
 }
 
@@ -504,7 +504,7 @@ async function loadCourses(){
   grid.innerHTML = `<div class="empty-state"><div class="e-icon">⏳</div><h4>Loading…</h4></div>`;
 
   try{
-    const r = await fetch('api/courses.php?'+params,{credentials:'include'});
+    const r = await fetch('/courses.php?'+params,{credentials:'include'});
     const j = await r.json();
     allCourses = j.success ? j.data : [];
   }catch(e){ allCourses = []; }
@@ -615,7 +615,7 @@ async function saveCourse(){
     description: document.getElementById('e_desc').value,
   };
   try{
-    const r = await fetch('api/courses.php?action=update',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const r = await fetch('/courses.php?action=update',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j = await r.json();
     if(j.success){ closeModal('editModal'); loadCourses(); showToast('✅ Course updated!'); }
     else showToast('❌ '+(j.message||'Update failed'));
@@ -653,7 +653,7 @@ async function addCourse(){
     start_date:  document.getElementById('c_start').value||null,
   };
   try{
-    const r = await fetch('api/courses.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const r = await fetch('/courses.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j = await r.json();
     if(j.success){ closeModal('addModal'); loadCourses(); showToast('✅ Course added!'); }
     else showToast('❌ '+(j.message||'Failed to add course'));
@@ -665,7 +665,7 @@ async function addCourse(){
 async function deleteCourse(id){
   if(!confirm('Delete this course? This cannot be undone.')) return;
   try{
-    const r = await fetch('api/courses.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    const r = await fetch('/courses.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
     const j = await r.json();
     if(j.success){ loadCourses(); showToast('🗑️ Course deleted'); }
     else showToast('❌ '+(j.message||'Delete failed'));
