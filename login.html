@@ -454,7 +454,7 @@
     btn.disabled = true;
 
     try {
-      const res = await fetch('api/auth.php?action=login', {
+      const res = await fetch('/auth.php?action=login', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
