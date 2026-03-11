@@ -378,7 +378,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 <script>
 // ── Auth guard ────────────────────────────────────────────────
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   if(j.data.role!=='Admin'){location.href='user-dashboard.html';return;}
@@ -388,11 +388,11 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
   renderCerts();
 })();
 
-function logout(){fetch('api/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
+function logout(){fetch('/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
 
 // ── Populate dropdowns from DB ────────────────────────────────
 async function loadStudentOptions(){
-  const r=await fetch('api/students.php?action=list&status=Approved',{credentials:'include'});
+  const r=await fetch('/students.php?action=list&status=Approved',{credentials:'include'});
   const j=await r.json();
   const sel=document.getElementById('g_student_id');
   if(!sel||!j.success)return;
@@ -405,7 +405,7 @@ async function loadStudentOptions(){
 }
 
 async function loadCourseOptions(){
-  const r=await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+  const r=await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
   const j=await r.json();
   const sel=document.getElementById('g_course_id');
   if(!sel||!j.success)return;
@@ -489,7 +489,7 @@ async function generateCert(){
   const d=getCertFormData();
   if(!d.student_id||!d.course_id){showToast('⚠️ Select Student and Course','#FEF3C7','#92400E');return;}
   if(!d.issue_date){showToast('⚠️ Issue date required','#FEF3C7','#92400E');return;}
-  const r=await fetch('api/certificates.php?action=generate',{
+  const r=await fetch('/certificates.php?action=generate',{
     method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       student_id:d.student_id, course_id:d.course_id,
@@ -513,7 +513,7 @@ document.getElementById('previewModal')?.addEventListener('click',e=>{if(e.targe
 async function renderCerts(search=''){
   const params=new URLSearchParams({action:'list'});
   if(search)params.append('search',search);
-  const r=await fetch('api/certificates.php?'+params,{credentials:'include'});
+  const r=await fetch('/certificates.php?'+params,{credentials:'include'});
   const j=await r.json();
   const tbody=document.getElementById('certTbody');
   if(!j.success||!j.data.length){
@@ -556,7 +556,7 @@ function updateStats(total,sent,pending){
 function filterCerts(q){renderCerts(q);}
 
 async function viewCertById(id){
-  const r=await fetch(`api/certificates.php?action=get&id=${id}`,{credentials:'include'});
+  const r=await fetch(`/certificates.php?action=get&id=${id}`,{credentials:'include'});
   const j=await r.json();
   if(!j.success){showToast('Error loading certificate');return;}
   const c=j.data;
@@ -572,7 +572,7 @@ async function viewCertById(id){
 }
 
 async function sendCert(id){
-  const r=await fetch('api/certificates.php?action=send',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/certificates.php?action=send',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){renderCerts();showToast('📧 Certificate sent!','#D1FAE5','#065F46');}
   else showToast('❌ '+j.message,'#FEF2F2','#991B1B');
