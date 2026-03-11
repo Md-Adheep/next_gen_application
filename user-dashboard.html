@@ -252,7 +252,7 @@ const COLORS=['#7C3AED','#06B6D4','#F97316','#10B981','#8B5CF6'];
 function avColor(n){let h=0;for(const c of n)h=(h+c.charCodeAt(0))%COLORS.length;return COLORS[h];}
 function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 
-function logout(){fetch('api/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
+function logout(){fetch('/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
 function scrollToReg(){setTimeout(()=>document.getElementById('regSection').scrollIntoView({behavior:'smooth'}),100);}
 function switchTab(btn,name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -261,7 +261,7 @@ function switchTab(btn,name){
 }
 
 async function loadStats(uid){
-  const r=await fetch('api/dashboard.php?action=stats',{credentials:'include'});
+  const r=await fetch('/dashboard.php?action=stats',{credentials:'include'});
   const j=await r.json();
   if(!j.success)return;
   const d=j.data;
@@ -273,7 +273,7 @@ async function loadStats(uid){
 }
 
 async function loadMyStudents(){
-  const r=await fetch('api/students.php?action=list',{credentials:'include'});
+  const r=await fetch('/students.php?action=list',{credentials:'include'});
   const j=await r.json();
   const tbody=document.getElementById('myStudentTbody');
   if(!j.success||!j.data.length){
@@ -300,7 +300,7 @@ async function loadMyStudents(){
 }
 
 async function loadActivity(){
-  const r=await fetch('api/dashboard.php?action=activity&limit=5',{credentials:'include'});
+  const r=await fetch('/dashboard.php?action=activity&limit=5',{credentials:'include'});
   const j=await r.json();
   const feed=document.getElementById('actFeed');
   if(!j.success||!j.data.length){
@@ -316,7 +316,7 @@ async function loadActivity(){
 }
 
 async function loadCourseDropdown(){
-  const r=await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+  const r=await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
   const j=await r.json();
   const sel=document.getElementById('r_course');
   if(!sel||!j.success)return;
@@ -341,7 +341,7 @@ async function submitReg(){
     notes:document.getElementById('r_notes').value,
     courses:[{course_id:course, start_date:document.getElementById('r_start').value, mode:'Offline'}]
   };
-  const r=await fetch('api/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch('/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json();
   if(j.success){
     showToast('✅ Registration submitted for admin approval!','#D1FAE5','#065F46');
@@ -365,7 +365,7 @@ function showToast(msg,bg,color){
 
 // ── Init ──────────────────────────────────────────────────────
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   if(j.data.role==='Admin'){location.href='dashboard.html';return;}
