@@ -243,7 +243,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);disp
 </div>
 
 <script>
-function logout(){fetch('api/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
+function logout(){fetch('/auth.php?action=logout',{credentials:'include'}).finally(()=>{sessionStorage.clear();location.href='login.html';});}
 
 function switchTab(btn,name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -260,7 +260,7 @@ const MODES=['Online','Offline','Hybrid'];
 let rowCount=0;
 
 async function loadCoursesForTable(){
-  const r=await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+  const r=await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
   const j=await r.json();
   if(j.success) courseOptions='<option value="">Select course…</option>'+j.data.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
 }
@@ -312,7 +312,7 @@ async function submitForm(){
     address_line2:document.getElementById('f_a2')?.value||'',
     courses
   };
-  const r=await fetch('api/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch('/students.php?action=create',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const j=await r.json();
   if(j.success){showToast('✅ Student registered!','#D1FAE5','#065F46');clearForm();loadPending();}
   else showToast('❌ '+j.message,'#FEF2F2','#991B1B');
@@ -327,7 +327,7 @@ function clearForm(){
 
 // Pending submissions ──────────────────────────────────────────
 async function loadPending(){
-  const r=await fetch('api/students.php?action=list&status=Pending',{credentials:'include'});
+  const r=await fetch('/students.php?action=list&status=Pending',{credentials:'include'});
   const j=await r.json();
   const el=document.getElementById('pendingList');
   if(!j.success||!j.data.length){
@@ -347,14 +347,14 @@ async function loadPending(){
   </div>`).join('');
 }
 async function approveSub(id){
-  const r=await fetch('api/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){loadPending();showToast('✅ Student approved!','#D1FAE5','#065F46');}
   else showToast('❌ '+j.message,'#FEF2F2','#991B1B');
 }
 async function rejectSub(id){
   if(!confirm('Reject this student?'))return;
-  const r=await fetch('api/students.php?action=reject',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/students.php?action=reject',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){loadPending();showToast('Student rejected','#FEF2F2','#991B1B');}
 }
@@ -369,7 +369,7 @@ function showToast(msg,bg,color){
 
 // ── Init ──────────────────────────────────────────────────────
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   if(j.data.role!=='Admin'){location.href='user-dashboard.html';return;}
