@@ -662,7 +662,7 @@ function avColor(n) { let h=0; for(let c of n) h=(h+c.charCodeAt(0))%COLORS.leng
 function initials(n) { return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 
 async function loadUsers() {
-  const r = await fetch('api/users.php?action=list', { credentials:'include' });
+  const r = await fetch('/users.php?action=list', { credentials:'include' });
   const j = await r.json();
   if (!j.success) return;
   users = j.data;
@@ -704,7 +704,7 @@ async function addUser() {
   const fn=document.getElementById('f_fn').value.trim(), ln=document.getElementById('f_ln').value.trim();
   const role=document.getElementById('f_role').value, pw=document.getElementById('f_pw').value;
   if(!fn||!ln||!role||!pw){showToast('⚠️ Please fill all required fields','#FEF3C7','#92400E');return;}
-  const r=await fetch('api/users.php?action=create',{
+  const r=await fetch('/users.php?action=create',{
     method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       name:fn+' '+ln,
@@ -732,7 +732,7 @@ function openEdit(id) {
   document.getElementById('editModal').classList.add('show');
 }
 async function saveEdit() {
-  const r=await fetch('api/users.php?action=update',{
+  const r=await fetch('/users.php?action=update',{
     method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({id:editId,name:document.getElementById('e_name').value,
       email:document.getElementById('e_email').value,role:document.getElementById('e_role').value,
@@ -744,7 +744,7 @@ async function saveEdit() {
 }
 async function delUser(id) {
   if(!confirm('Delete this user?')) return;
-  const r=await fetch('api/users.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  const r=await fetch('/users.php?action=delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
   const j=await r.json();
   if(j.success){loadUsers();showToast('🗑️ User removed','#FEF2F2','#991B1B');}
   else showToast('❌ '+j.message,'#FEF2F2','#991B1B');
@@ -758,7 +758,7 @@ const LEVELS=['Beginner','Intermediate','Advanced','Professional'];
 const LANGS=['English','Tamil','Hindi','Telugu','Kannada'];
 
 async function loadCoursesForReg() {
-  const r=await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+  const r=await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
   const j=await r.json();
   if(j.success) courseOptions=j.data;
 }
@@ -796,7 +796,7 @@ async function submitReg() {
     const inp=row.querySelector('input[type=date]');
     return {course_id:sels[0].value,mode:'Offline',start_date:inp.value||''};
   }).filter(c=>c.course_id);
-  const r=await fetch('api/students.php?action=create',{method:'POST',credentials:'include',
+  const r=await fetch('/students.php?action=create',{method:'POST',credentials:'include',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({first_name:fn,last_name:ln,email,
       phone:(document.getElementById('r_cc').value||'+91')+(document.getElementById('r_phone').value||''),
@@ -822,7 +822,7 @@ function showToast(msg, bg, color) {
 
 // ── Init ─────────────────────────────────────────────────────
 (async()=>{
-  const r=await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r=await fetch('/auth.php?action=me',{credentials:'include'});
   const j=await r.json();
   if(!j.success){location.href='login.html';return;}
   if(j.data.role!=='Admin'){location.href='dashboard.html';return;}
