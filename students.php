@@ -1,5 +1,5 @@
 <?php
-// api/students.php
+// /students.php
 // GET  ?action=list        [status, search, course_id]
 // GET  ?action=get         id
 // POST ?action=create      {first_name,last_name,email,phone,gender,dob,nationality,
