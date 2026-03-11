@@ -248,149 +248,150 @@
 
 // else fail('Unknown action.', 404);
 
-<?php
+// <?php
 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+// header("Content-Type: application/json");
+// header("Access-Control-Allow-Origin: *");
 
-$host = "localhost";
-$db   = "certificate_db";
-$user = "root";
-$pass = "";
+// $host = "localhost";
+// $db   = "certificate_db";
+// $user = "root";
+// $pass = "";
 
-try{
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-}catch(PDOException $e){
-    echo json_encode(["status"=>"error","message"=>$e->getMessage()]);
-    exit;
-}
+// try{
+//     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8",$user,$pass);
+//     $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+// }catch(PDOException $e){
+//     echo json_encode(["status"=>"error","message"=>$e->getMessage()]);
+//     exit;
+// }
 
-$action = $_GET['action'] ?? '';
+// $action = $_GET['action'] ?? '';
 
-/* ================================
-   CREATE CERTIFICATE
-================================ */
+// /* ================================
+//    CREATE CERTIFICATE
+// ================================ */
 
-if($action == "create"){
+// if($action == "create"){
 
-    $name  = $_POST['name']  ?? '';
-    $email = $_POST['email'] ?? '';
-    $course = $_POST['course'] ?? '';
+//     $name  = $_POST['name']  ?? '';
+//     $email = $_POST['email'] ?? '';
+//     $course = $_POST['course'] ?? '';
 
-    if($name=='' || $email=='' || $course==''){
-        echo json_encode(["status"=>"error","message"=>"Missing fields"]);
-        exit;
-    }
+//     if($name=='' || $email=='' || $course==''){
+//         echo json_encode(["status"=>"error","message"=>"Missing fields"]);
+//         exit;
+//     }
 
-    try{
+//     try{
 
-        $stmt = $pdo->prepare("INSERT INTO certificates (name,email,course,created_at) VALUES (?,?,?,NOW())");
-        $stmt->execute([$name,$email,$course]);
+//         $stmt = $pdo->prepare("INSERT INTO certificates (name,email,course,created_at) VALUES (?,?,?,NOW())");
+//         $stmt->execute([$name,$email,$course]);
 
-        echo json_encode([
-            "status"=>"success",
-            "message"=>"Certificate created successfully"
-        ]);
+//         echo json_encode([
+//             "status"=>"success",
+//             "message"=>"Certificate created successfully"
+//         ]);
 
-    }catch(PDOException $e){
+//     }catch(PDOException $e){
 
-        echo json_encode([
-            "status"=>"error",
-            "message"=>$e->getMessage()
-        ]);
-    }
+//         echo json_encode([
+//             "status"=>"error",
+//             "message"=>$e->getMessage()
+//         ]);
+//     }
 
-}
+// }
 
-/* ================================
-   LIST CERTIFICATES
-================================ */
+// /* ================================
+//    LIST CERTIFICATES
+// ================================ */
 
-elseif($action == "list"){
+// elseif($action == "list"){
 
-    try{
+//     try{
 
-        $stmt = $pdo->query("SELECT * FROM certificates ORDER BY id DESC");
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//         $stmt = $pdo->query("SELECT * FROM certificates ORDER BY id DESC");
+//         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        echo json_encode([
-            "status"=>"success",
-            "data"=>$data
-        ]);
+//         echo json_encode([
+//             "status"=>"success",
+//             "data"=>$data
+//         ]);
 
-    }catch(PDOException $e){
+//     }catch(PDOException $e){
 
-        echo json_encode([
-            "status"=>"error",
-            "message"=>$e->getMessage()
-        ]);
-    }
+//         echo json_encode([
+//             "status"=>"error",
+//             "message"=>$e->getMessage()
+//         ]);
+//     }
 
-}
+// }
 
-/* ================================
-   SEND CERTIFICATE
-================================ */
+// /* ================================
+//    SEND CERTIFICATE
+// ================================ */
 
-elseif($action == "send"){
+// elseif($action == "send"){
 
-    $id = $_POST['id'] ?? '';
+//     $id = $_POST['id'] ?? '';
 
-    if($id==''){
-        echo json_encode(["status"=>"error","message"=>"ID required"]);
-        exit;
-    }
+//     if($id==''){
+//         echo json_encode(["status"=>"error","message"=>"ID required"]);
+//         exit;
+//     }
 
-    try{
+//     try{
 
-        $stmt = $pdo->prepare("SELECT * FROM certificates WHERE id=?");
-        $stmt->execute([$id]);
-        $cert = $stmt->fetch(PDO::FETCH_ASSOC);
+//         $stmt = $pdo->prepare("SELECT * FROM certificates WHERE id=?");
+//         $stmt->execute([$id]);
+//         $cert = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if(!$cert){
-            echo json_encode(["status"=>"error","message"=>"Certificate not found"]);
-            exit;
-        }
+//         if(!$cert){
+//             echo json_encode(["status"=>"error","message"=>"Certificate not found"]);
+//             exit;
+//         }
 
-        $to = $cert['email'];
-        $subject = "Your Certificate";
-        $message = "Hello ".$cert['name'].",\n\nYour certificate for ".$cert['course']." is generated.";
-        $headers = "From: admin@nextgen.com";
+//         $to = $cert['email'];
+//         $subject = "Your Certificate";
+//         $message = "Hello ".$cert['name'].",\n\nYour certificate for ".$cert['course']." is generated.";
+//         $headers = "From: admin@nextgen.com";
 
-        if(mail($to,$subject,$message,$headers)){
-            echo json_encode([
-                "status"=>"success",
-                "message"=>"Email sent successfully"
-            ]);
-        }else{
-            echo json_encode([
-                "status"=>"error",
-                "message"=>"Certificate saved but email not sent (server mail not configured)"
-            ]);
-        }
+//         if(mail($to,$subject,$message,$headers)){
+//             echo json_encode([
+//                 "status"=>"success",
+//                 "message"=>"Email sent successfully"
+//             ]);
+//         }else{
+//             echo json_encode([
+//                 "status"=>"error",
+//                 "message"=>"Certificate saved but email not sent (server mail not configured)"
+//             ]);
+//         }
 
-    }catch(PDOException $e){
+//     }catch(PDOException $e){
 
-        echo json_encode([
-            "status"=>"error",
-            "message"=>$e->getMessage()
-        ]);
-    }
+//         echo json_encode([
+//             "status"=>"error",
+//             "message"=>$e->getMessage()
+//         ]);
+//     }
 
-}
+// }
 
-/* ================================
-   INVALID ACTION
-================================ */
+// /* ================================
+//    INVALID ACTION
+// ================================ */
 
-else{
+// else{
 
-    echo json_encode([
-        "status"=>"error",
-        "message"=>"Invalid action"
-    ]);
+//     echo json_encode([
+//         "status"=>"error",
+//         "message"=>"Invalid action"
+//     ]);
 
-}
+// }
 
-?>
+// ?>
+
