@@ -174,7 +174,7 @@ async function loadStudents() {
   if (status) params.append('status', status);
   if (search) params.append('search', search);
 
-  const r = await fetch('api/students.php?' + params, { credentials: 'include' });
+  const r = await fetch('/students.php?' + params, { credentials: 'include' });
   const j = await r.json();
   const tbody = document.getElementById('studentsTbody');
 
@@ -227,7 +227,7 @@ function switchTab(el, tab) {
 
 async function changeStatus(id, action) {
   if (action==='reject' && !confirm('Reject this student?')) return;
-  const r = await fetch(`api/students.php?action=${action}`, {
+  const r = await fetch(`/students.php?action=${action}`, {
     method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})
   });
   const j = await r.json();
@@ -236,16 +236,16 @@ async function changeStatus(id, action) {
 }
 
 async function approveAll() {
-  const r = await fetch('api/students.php?action=list&status=Pending', {credentials:'include'});
+  const r = await fetch('/students.php?action=list&status=Pending', {credentials:'include'});
   const j = await r.json();
   if (j.success && j.data.length) {
-    await Promise.all(j.data.map(s => fetch('api/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:s.id})})));
+    await Promise.all(j.data.map(s => fetch('/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:s.id})})));
     loadStudents(); showToast('✅ All pending approved!');
   }
 }
 
 async function viewStudent(id) {
-  const r = await fetch(`api/students.php?action=get&id=${id}`, {credentials:'include'});
+  const r = await fetch(`/students.php?action=get&id=${id}`, {credentials:'include'});
   const j = await r.json();
   if (!j.success) { showToast('❌ '+j.message); return; }
   const s = j.data;
@@ -282,7 +282,7 @@ async function addStudent() {
   const ln = document.getElementById('s_lname').value.trim();
   const cid = document.getElementById('s_course').value;
   if (!fn||!ln) { showToast('⚠️ First and last name required.'); return; }
-  const r = await fetch('api/students.php?action=create', {
+  const r = await fetch('/students.php?action=create', {
     method:'POST', credentials:'include', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       first_name:fn, last_name:ln,
@@ -301,7 +301,7 @@ async function addStudent() {
 
 // Populate course dropdown from DB
 async function loadCourseFilter() {
-  const r = await fetch('api/courses.php?action=list', {credentials:'include'});
+  const r = await fetch('/courses.php?action=list', {credentials:'include'});
   const j = await r.json();
   if (!j.success) return;
   const sel = document.getElementById('courseFilter');
@@ -320,7 +320,7 @@ function showToast(msg) {
 
 // Init
 (async()=>{
-  const r = await fetch('api/auth.php?action=me',{credentials:'include'});
+  const r = await fetch('/auth.php?action=me',{credentials:'include'});
   const j = await r.json();
   if(!j.success){location.href='login.html';return;}
   loadCourseFilter();
