@@ -431,7 +431,7 @@ let allStudents   = [];
 // ── Auth ─────────────────────────────────────────────
 async function checkAuth(){
   try{
-    const r = await fetch('api/auth.php?action=me',{credentials:'include'});
+    const r = await fetch('/auth.php?action=me',{credentials:'include'});
     const j = await r.json();
     if(!j.success){ location.href='login.html'; return null; }
     const u = j.data;
@@ -447,7 +447,7 @@ async function checkAuth(){
 }
 
 async function logout(){
-  await fetch('api/auth.php?action=logout',{credentials:'include'});
+  await fetch('/auth.php?action=logout',{credentials:'include'});
   location.href='login.html';
 }
 
@@ -462,14 +462,14 @@ async function loadStudents(){
   tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="e-icon">⏳</div><h4>Loading…</h4></div></td></tr>`;
 
   try{
-    const r = await fetch('api/students.php?'+params,{credentials:'include'});
+    const r = await fetch('/students.php?'+params,{credentials:'include'});
     const j = await r.json();
     allStudents = j.success ? j.data : [];
   }catch(e){ allStudents = []; }
 
   // Update stat counts
   try{
-    const ra = await fetch('api/students.php?action=list',{credentials:'include'});
+    const ra = await fetch('/students.php?action=list',{credentials:'include'});
     const ja = await ra.json();
     if(ja.success){
       const all = ja.data;
@@ -544,7 +544,7 @@ function switchTab(el, status){
 async function changeStatus(id, action){
   if(action==='reject' && !confirm('Reject this student?')) return;
   try{
-    const r = await fetch(`api/students.php?action=${action}`,{
+    const r = await fetch(`/students.php?action=${action}`,{
       method:'POST', credentials:'include',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id})
@@ -558,11 +558,11 @@ async function changeStatus(id, action){
 // ── Approve all pending ───────────────────────────────
 async function approveAll(){
   try{
-    const r = await fetch('api/students.php?action=list&status=Pending',{credentials:'include'});
+    const r = await fetch('/students.php?action=list&status=Pending',{credentials:'include'});
     const j = await r.json();
     if(!j.success||!j.data.length){ showToast('⚠️ No pending students'); return; }
     if(!confirm(`Approve all ${j.data.length} pending students?`)) return;
-    await Promise.all(j.data.map(s=>fetch('api/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:s.id})})));
+    await Promise.all(j.data.map(s=>fetch('/students.php?action=approve',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:s.id})})));
     loadStudents(); showToast('✅ All pending students approved!');
   }catch(e){ showToast('❌ Network error'); }
 }
@@ -570,7 +570,7 @@ async function approveAll(){
 // ── View student ──────────────────────────────────────
 async function viewStudent(id){
   try{
-    const r = await fetch(`api/students.php?action=get&id=${id}`,{credentials:'include'});
+    const r = await fetch(`/students.php?action=get&id=${id}`,{credentials:'include'});
     const j = await r.json();
     if(!j.success){ showToast('❌ '+j.message); return; }
     const s = j.data;
@@ -615,7 +615,7 @@ async function addStudent(){
   const btn = document.getElementById('addBtn');
   btn.textContent = 'Enrolling…'; btn.disabled = true;
   try{
-    const r = await fetch('api/students.php?action=create',{
+    const r = await fetch('/students.php?action=create',{
       method:'POST', credentials:'include',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -642,7 +642,7 @@ async function addStudent(){
 // ── Load courses for dropdowns ────────────────────────
 async function loadCourses(){
   try{
-    const r = await fetch('api/courses.php?action=list&status=Active',{credentials:'include'});
+    const r = await fetch('/courses.php?action=list&status=Active',{credentials:'include'});
     const j = await r.json();
     if(!j.success) return;
     const sel1 = document.getElementById('courseFilter');
