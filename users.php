@@ -1,5 +1,5 @@
 <?php
-// api/users.php
+// /users.php
 // GET  ?action=list   [search, role, status]
 // GET  ?action=get    id
 // POST ?action=create {name,username,email,password,role,department}
