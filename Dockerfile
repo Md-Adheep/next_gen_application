@@ -1,16 +1,9 @@
 FROM php:8.2-apache
 
-# Set working directory
-WORKDIR /var/www/html
+RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Copy project files into container
-COPY . .
+COPY . /var/www/html/
 
-# Install MySQL extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN chown -R www-data:www-data /var/www/html
 
-# Enable Apache rewrite module
-RUN a2enmod rewrite
-
-# Expose port
 EXPOSE 80
