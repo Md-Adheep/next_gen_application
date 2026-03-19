@@ -171,7 +171,7 @@ VALUES (
   'Admin',
   'admin',
   'admin@nextgen.com',
-  '$2y$12$Lh8WvTmPk9dN2QoR3sX7uO4jGZwMc6BfE1yKI0aHP5eDqiVnJFlt.',
+  '$2y$12$xNwnzuQoL3P2kbdoEagmgO9B.lZbrXGdlzmZV1L3YnJNpQXD0BoRe',
   'Admin',
   'Management',
   'Active'
